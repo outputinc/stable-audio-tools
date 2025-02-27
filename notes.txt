@@ -1,0 +1,29 @@
+Fine-tuning
+1. Download/copy Output folder
+    ./fetch-arcade-content.sh or copy from filesystem
+2. Upload loops.csv
+3. Download checkpoints
+    python download_checkpoints.py
+4. modify finetune.sh script
+
+Once finetuned, need to unwrap
+python unwrap_model.py --model-config ckpts/model_config.json --ckpt-path checkpoints/output-train/i3b4lymx/checkpoints/epoch=17-step=8000.ckpt --name model_unwrap
+
+To Run Demo
+./run_demo.sh {ckpt_path}
+
+Remember to tmux!
+Custom files
+    * dataset.py
+    * model_config.json
+    * (dataset config) local_training_example.json
+    * (metadata) custom_md_example.py
+
+Help with wandb: pgrep wandb
+
+workers 8, bs 64: 50 steps -> 1hr 22min (0.19 it/s)
+workers 16, bs 64: 50 steps -> 1hr 23min (0.19 it/s)
+workers 12, bs 128: 25 steps -> 1hr 25min (0.09 it/s)
+
+First ckpt:
+checkpoints/output-train/i3b4lymx/checkpoints/epoch=17-step=8000.ckpt -> Trained for 20hrs on 60k Arcade content + Loop Names

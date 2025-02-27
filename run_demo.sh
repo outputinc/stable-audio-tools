@@ -1,0 +1,1 @@
+python3 ./run_gradio.py --ckpt-path $1 --model-config ckpts/model_config.json --share

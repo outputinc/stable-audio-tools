@@ -10,6 +10,7 @@ from stable_audio_tools.models.utils import load_ckpt_state_dict, remove_weight_
 from stable_audio_tools.training import create_training_wrapper_from_config, create_demo_callback_from_config
 from stable_audio_tools.training.utils import copy_state_dict
 
+torch.set_float32_matmul_precision('medium' if torch.__version__ >= "2.0.0" else 'high')
 class ExceptionCallback(pl.Callback):
     def on_exception(self, trainer, module, err):
         print(f'{type(err).__name__}: {err}')

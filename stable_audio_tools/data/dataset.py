@@ -18,8 +18,9 @@ from torchaudio import transforms as T
 from typing import Optional, Callable, List
 
 from .utils import Stereo, Mono, PhaseFlipper, PadCrop_Normalized_T, VolumeNorm
+from .olac import read
 
-AUDIO_KEYS = ("flac", "wav", "mp3", "m4a", "ogg", "opus")
+AUDIO_KEYS = ("flac", "wav", "mp3", "m4a", "ogg", "opus", "olac")
 
 # fast_scandir implementation by Scott Hawley originally in https://github.com/zqevans/audio-diffusion/blob/main/dataset/dataset.py
 
@@ -94,7 +95,7 @@ def keyword_scandir(
 def get_audio_filenames(
     paths: list,  # directories in which to search
     keywords=None,
-    exts=['.wav', '.mp3', '.flac', '.ogg', '.aif', '.opus']
+    exts=['.wav', '.mp3', '.flac', '.ogg', '.aif', '.opus', "olac"]
 ):
     "recursively get a list of audio filenames"
     filenames = []
@@ -184,8 +185,16 @@ class SampleDataset(torch.utils.data.Dataset):
 
     def load_file(self, filename):
         ext = filename.split(".")[-1]
-
-        audio, in_sr = torchaudio.load(filename, format=ext)
+        if ext == "olac":
+            audio, in_sr = read(open(filename, "rb"))
+            audio = audio.astype(np.float32)
+            if len(audio.shape) == 2:
+                audio = audio.T
+            else:
+                audio = audio[None, :]
+            audio = torch.from_numpy(audio)
+        else:
+            audio, in_sr = torchaudio.load(filename, format=ext)
 
         if in_sr != self.sr:
             resample_tf = T.Resample(in_sr, self.sr)
@@ -610,7 +619,6 @@ class LocalWebDatasetConfig:
 def audio_decoder(key, value):
     # Get file extension from key
     ext = key.split(".")[-1]
-
     if ext in AUDIO_KEYS:
         return torchaudio.load(io.BytesIO(value))
     else:
@@ -958,3 +966,20 @@ def create_dataloader_from_config(dataset_config, batch_size, sample_size, sampl
             latent_crop_length=dataset_config.get("latent_crop_length", None),
             resampled_shards=dataset_config.get("resampled_shards", True)
         ).data_loader
+
+
+import sys
+import pdb
+
+class ForkedPdb(pdb.Pdb):
+    """A Pdb subclass that may be used
+    from a forked multiprocessing child
+
+    """
+    def interaction(self, *args, **kwargs):
+        _stdin = sys.stdin
+        try:
+            sys.stdin = open('/dev/stdin')
+            pdb.Pdb.interaction(self, *args, **kwargs)
+        finally:
+            sys.stdin = _stdin

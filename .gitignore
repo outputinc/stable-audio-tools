@@ -162,3 +162,7 @@ cython_debug/
 *.ckpt
 *.wav
 wandb/*
+Output/
+.gradio
+ckpts
+loops.csv
