@@ -43,13 +43,10 @@
             "configs": [
                 {
                     "id": "prompt",
-                    "type": "clap_text",
+                    "type": "t5",
                     "config": {
-                        "audio_model_type": "HTSAT-base",
-                        "enable_fusion": true,
-                        "clap_ckpt_path": "/path/to/clap.ckpt",
-                        "use_text_features": true,
-                        "feature_layer_ix": -2
+                        "t5_model_name": "t5-base",
+                        "max_length": 128
                     }
                 },
                 {
