@@ -6,6 +6,13 @@ import torch
 import os
 
 def main(args):
+    args = {
+        "model_config": "model_config.json",
+        "ckpt_path": "stable-audio_loop_names_ft.ckpt",
+        "username": "output",
+        "password": "becreative",
+        "model_half": True
+    }
     torch.manual_seed(42)
     # https://drive.google.com/file/d/1-BUWjuYb5UIlOtYEjs8iyMFb3rdbIMY-/view?usp=sharing
     #
@@ -15,14 +22,12 @@ def main(args):
         subprocess.run(cmd, shell=True)
 
     interface = create_ui(
-        model_config_path = args.model_config, 
-        ckpt_path=args.ckpt_path, 
-        pretrained_name=args.pretrained_name, 
-        pretransform_ckpt_path=args.pretransform_ckpt_path,
-        model_half=args.model_half
+        model_config_path = args["model_config"],
+        ckpt_path=args["ckpt_path"],
+        model_half=args["model_half"]
     )
     interface.queue()
-    interface.launch(share=args.share, auth=(args.username, args.password) if args.username is not None else None)
+    interface.launch(share=False, auth=("output, becreative"))
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='Run gradio interface')
@@ -35,11 +40,5 @@ if __name__ == "__main__":
     # parser.add_argument('--password', type=str, help='Gradio password', required=False)
     # parser.add_argument('--model-half', action='store_true', help='Whether to use half precision', required=False, default=True)
     # args = parser.parse_args()
-    args = {
-        "model_config": "model_config.json",
-        "ckpt_path": "stable-audio_loop_names_ft.ckpt",
-        "username": "output",
-        "password": "becreative",
-        "model_half": True
-    }
-    main(args)
+
+    main()
