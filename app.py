@@ -5,7 +5,7 @@ import subprocess
 import torch
 import os
 
-def main(args):
+def main():
     args = {
         "model_config": "model_config.json",
         "ckpt_path": "stable-audio_loop_names_ft.ckpt",
