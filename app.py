@@ -1,9 +1,8 @@
-from stable_audio_tools import get_pretrained_model
 from stable_audio_tools.interface.gradio import create_ui
-import json 
 import subprocess
 import torch
 import os
+import gdown
 
 def main():
     args = {
@@ -18,9 +17,7 @@ def main():
     #
     if not os.path.exists("stable-audio_loop_names_ft.ckpt"):
         gdrive_id = "1-BUWjuYb5UIlOtYEjs8iyMFb3rdbIMY-"
-        cmd = f"wget https://docs.google.com/uc?export=download&confirm=t&id={gdrive_id} -O stable-audio_loop_names_ft.ckpt"
-        subprocess.run(cmd, shell=True)
-
+        gdown.download(f"https://drive.google.com/uc?id={gdrive_id}", "stable-audio_loop_names_ft.ckpt", quiet=False)
     interface = create_ui(
         model_config_path = args["model_config"],
         ckpt_path=args["ckpt_path"],
