@@ -5,7 +5,6 @@ colorTo: blue
 sdk: gradio
 sdk_version: 5.20.0
 app_file: app.py
-pinned: false
 
 # stable-audio-tools
 Training and inference code for audio generation models
