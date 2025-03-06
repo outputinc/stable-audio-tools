@@ -166,3 +166,5 @@ Output/
 .gradio
 ckpts
 loops.csv
+
+.DS_Store
