@@ -24,7 +24,7 @@ def main():
         model_half=args["model_half"]
     )
     interface.queue()
-    interface.launch(auth=("output", "becreative"))
+    interface.launch(debug = False, auth=(os.environ.get("USERNAME"), os.environ.get("PASSWORD")))
 
 if __name__ == "__main__":
     # parser = argparse.ArgumentParser(description='Run gradio interface')
